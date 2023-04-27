@@ -73,14 +73,6 @@ def get_logger() -> logging.Logger:
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """
-    The database is protected by a username and password that are set as environment variables on the server:
-    PERSONAL_DATA_DB_USERNAME (set the default as “root”), 
-    PERSONAL_DATA_DB_PASSWORD (set the default as an empty string) and 
-    PERSONAL_DATA_DB_HOST (set the default as “localhost”).
-
-    The database name is stored in PERSONAL_DATA_DB_NAME
-    
-    To get environment variables we have to use the os modules and mysqlconnector to connect to the dataase 
     """
     user = os.getenv('PERSONAL_DATA_DB_USERNAME') or "root"
     passwd = os.getenv('PERSONAL_DATA_DB_PASSWORD') or ""
