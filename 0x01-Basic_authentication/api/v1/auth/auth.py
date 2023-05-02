@@ -4,6 +4,7 @@ Definition of class Auth
 """
 from typing import List
 
+
 class Auth:
     """
     Manages the API authentication
@@ -34,3 +35,4 @@ class Auth:
                     if path.startswith(i[:-1]):
                         return False
         return True
+
