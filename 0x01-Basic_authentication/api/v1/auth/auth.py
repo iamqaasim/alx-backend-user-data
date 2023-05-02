@@ -4,7 +4,6 @@ Definition of class Auth
 """
 from typing import List
 
-
 class Auth:
     """
     Manages the API authentication
