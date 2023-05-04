@@ -2,11 +2,11 @@
 """
 Route module for the API
 """
-from os import getenv
 from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 import os
+from os import getenv
 
 
 app = Flask(__name__)
@@ -36,6 +36,7 @@ def bef_req():
     """
     Filter each request before it's handled by the proper route
     """
+
     if auth is None:
         pass
     else:
@@ -57,6 +58,7 @@ def bef_req():
 def not_found(error) -> str:
     """ Not found handler
     """
+
     return jsonify({"error": "Not found"}), 404
 
 
@@ -64,6 +66,7 @@ def not_found(error) -> str:
 def unauthorized(error) -> str:
     """ Request unauthorized handler
     """
+
     return jsonify({"error": "Unauthorized"}), 401
 
 
@@ -71,6 +74,7 @@ def unauthorized(error) -> str:
 def forbidden(error) -> str:
     """ Request unauthorized handler
     """
+    
     return jsonify({"error": "Forbidden"}), 403
 
 
