@@ -12,7 +12,8 @@ from models.user import User
 class BasicAuth(Auth):
     """ Implement Basic Authorization protocol methods
     """
-    def extract_base64_authorization_header(self, authorization_header: str) -> str:
+    def extract_base64_authorization_header(self,
+                                            authorization_header: str) -> str:
         """
         Extracts the Base64 part of the Authorization header for a Basic
         Authorization
@@ -26,7 +27,9 @@ class BasicAuth(Auth):
         token = authorization_header.split(" ")[-1]
         return token
 
-    def decode_base64_authorization_header(self, base64_authorization_header: str) -> str:
+    def decode_base64_authorization_header(self,
+                                           base64_authorization_header:
+                                           str) -> str:
         """
         Decode a Base64-encoded string
         """
@@ -41,7 +44,9 @@ class BasicAuth(Auth):
         except Exception:
             return None
 
-    def extract_user_credentials(self, decoded_base64_authorization_header: str) -> (str, str):
+    def extract_user_credentials(self,
+                                 decoded_base64_authorization_header:
+                                 str) -> (str, str):
         """
         Returns user email and password from Base64 decoded value
         """
