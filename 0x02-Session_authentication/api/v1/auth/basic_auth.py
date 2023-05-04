@@ -1,72 +1,71 @@
 #!/usr/bin/env python3
 """
-Definition of class Auth
+Definition of class SessionAuth
 """
-import os
-from flask import request
-from typing import (
-    List,
-    TypeVar
-)
+import base64
+from uuid import uuid4
+from typing import TypeVar
+
+from .auth import Auth
+from models.user import User
 
 
-class Auth:
+class SessionAuth(Auth):
+    """ Implement Session Authorization protocol methods
     """
-    Manages the API authentication
-    """
-    def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
+    user_id_by_session_id = {}
+
+    def create_session(self, user_id: str = None) -> str:
         """
-        Determines whether a given path requires authentication or not
+        Creates a Session ID for a user with id user_id
         Args:
-            - path(str): Url path to be checked
-            - excluded_paths(List of str): List of paths that do not require
-              authentication
+            user_id (str): user's user id
         Return:
-            - True if path is not in excluded_paths, else False
+            None is user_id is None or not a string
+            Session ID in string format
         """
-        if path is None:
-            return True
-        elif excluded_paths is None or excluded_paths == []:
-            return True
-        elif path in excluded_paths:
+        if user_id is None or not isinstance(user_id, str):
+            return None
+        id = uuid4()
+        self.user_id_by_session_id[str(id)] = user_id
+        return str(id)
+
+    def user_id_for_session_id(self, session_id: str = None) -> str:
+        """
+        Returns a user ID based on a session ID
+        Args:
+            session_id (str): session ID
+        Return:
+            user id or None if session_id is None or not a string
+        """
+        if session_id is None or not isinstance(session_id, str):
+            return None
+        return self.user_id_by_session_id.get(session_id)
+
+    def current_user(self, request=None):
+        """
+        Return a user instance based on a cookie value
+        Args:
+            request : request object containing cookie
+        Return:
+            User instance
+        """
+        session_cookie = self.session_cookie(request)
+        user_id = self.user_id_for_session_id(session_cookie)
+        user = User.get(user_id)
+        return user
+
+    def destroy_session(self, request=None):
+        """
+        Deletes a user session
+        """
+        if request is None:
             return False
-        else:
-            for i in excluded_paths:
-                if i.startswith(path):
-                    return False
-                if path.startswith(i):
-                    return False
-                if i[-1] == "*":
-                    if path.startswith(i[:-1]):
-                        return False
+        session_cookie = self.session_cookie(request)
+        if session_cookie is None:
+            return False
+        user_id = self.user_id_for_session_id(session_cookie)
+        if user_id is None:
+            return False
+        del self.user_id_by_session_id[session_cookie]
         return True
-
-    def authorization_header(self, request=None) -> str:
-        """
-        Returns the authorization header from a request object
-        """
-        if request is None:
-            return None
-        header = request.headers.get('Authorization')
-        if header is None:
-            return None
-        return header
-
-    def current_user(self, request=None) -> TypeVar('User'):
-        """
-        Returns a User instance from information from a request object
-        """
-        return None
-
-    def session_cookie(self, request=None):
-        """
-        Returns a cookie from a request
-        Args:
-            request : request object
-        Return:
-            value of _my_session_id cookie from request object
-        """
-        if request is None:
-            return None
-        session_name = os.getenv('SESSION_NAME')
-        return request.cookies.get(session_name)
