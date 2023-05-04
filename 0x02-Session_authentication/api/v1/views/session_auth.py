@@ -20,7 +20,7 @@ def auth_session():
         return jsonify({"error": "email missing"}), 400
     if password is None or password == '':
         return jsonify({"error": "password missing"}), 400
-    
+
     users = User.search({"email": email})
     if users == []:
         return jsonify({"error": "no user found for this email"}), 404
@@ -35,7 +35,8 @@ def auth_session():
     return jsonify({"error": "wrong password"}), 401
 
 
-@app_views.route('/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/auth_session/logout',
+                 methods=['DELETE'], strict_slashes=False)
 def handle_logout():
     """
     Handle user logout

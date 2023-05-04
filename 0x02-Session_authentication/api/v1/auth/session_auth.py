@@ -26,7 +26,7 @@ class SessionAuth(Auth):
         id = uuid4()
         self.user_id_by_session_id[str(id)] = user_id
         return str(id)
-    
+
     def user_id_for_session_id(self, session_id: str = None) -> str:
         """
         Returns a user ID based on a session ID
@@ -51,7 +51,7 @@ class SessionAuth(Auth):
         user_id = self.user_id_for_session_id(session_cookie)
         user = User.get(user_id)
         return user
-    
+
     def destroy_session(self, request=None):
         """
         Deletes a user session

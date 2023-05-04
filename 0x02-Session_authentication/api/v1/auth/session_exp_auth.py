@@ -6,6 +6,7 @@ from .session_auth import SessionAuth
 import os
 from datetime import (datetime, timedelta)
 
+
 class SessionExpAuth(SessionAuth):
     """
     Definition of class SessionExpAuth that adds an
@@ -36,7 +37,7 @@ class SessionExpAuth(SessionAuth):
         }
         self.user_id_by_session_id[session_id] = session_dictionary
         return session_id
-    
+
     def user_id_for_session_id(self, session_id=None):
         """
         Returns a user ID based on a session ID
