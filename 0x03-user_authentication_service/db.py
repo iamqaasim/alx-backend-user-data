@@ -69,16 +69,23 @@ class DB:
             raise e
 
     def update_user(self, user_id: int, **kwargs) -> None:
-        session = self._session
+        """
+        Update a user's attributes
+        Args:
+            user_id (int): user's id
+            kwargs (dict): dict of key, value pairs representing the
+                           attributes to update and the values to update
+                           them with
+        Return:
+            No return value
+        """
         try:
-            user = self.find_user_by(id=user_id)
+            usr = self.find_user_by(id=user_id)
         except NoResultFound:
             raise ValueError()
-        
-        for attr, value in kwargs.items():
-            if hasattr(user, attr):
-                setattr(user, attr, value)
+        for k, v in kwargs.items():
+            if hasattr(usr, k):
+                setattr(usr, k, v)
             else:
-                raise ValueError()
-
-        session.commit()
+                raise ValueError
+        self._session.commit()
