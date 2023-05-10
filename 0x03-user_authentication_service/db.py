@@ -60,11 +60,23 @@ class DB:
             matching user or raise error
         """
         session = self._session
-        users = session.query(User)
-        for k, v in kwargs.items():
-            if k not in User.__dict__:
-                raise InvalidRequestError
-            for user in users:
-                if getattr(user, k) == v:
-                    return user
-        raise NoResultFound
+        try:
+            user = session.query(User).filter_by(**kwargs).first()
+            if not user:
+                raise NoResultFound
+            return user
+        except InvalidRequestError as e:
+            raise e
+    
+    def update_user(self, user_id: int, **kwargs) -> None:
+        user = self.find_user_by(id=user_id)
+        if not user:
+            raise NoResultFound("No user found with the given ID")
+
+        for attr, value in kwargs.items():
+            if hasattr(user, attr):
+                setattr(user, attr, value)
+            else:
+                raise ValueError(f"Invalid user attribute: {attr}")
+
+        self._session.commit()
