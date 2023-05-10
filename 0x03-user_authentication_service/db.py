@@ -57,11 +57,12 @@ class DB:
         Return:
             matching user or raise error
         """
-        all_users = self._session.query(User)
+        session = self._session
+        users = session.query(User)
         for k, v in kwargs.items():
             if k not in User.__dict__:
                 raise InvalidRequestError
-            for usr in all_users:
-                if getattr(usr, k) == v:
-                    return usr
+            for user in users:
+                if getattr(user, k) == v:
+                    return user
         raise NoResultFound
