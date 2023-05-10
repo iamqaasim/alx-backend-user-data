@@ -51,20 +51,17 @@ class DB:
 
     def find_user_by(self, **kwargs) -> User:
         """
-        Find a user in the database based on the provided filter criteria
-
+        Return a user who has an attribute matching the attributes passed as arguments
         Args:
-        user_id (int): user's id
-        kwargs (dict): dict of key (k), value (v) pairs representing the attributes to update and the values to update them with
+            kwargs (dict): dict of key (k), value (v) pairs representing the attributes to update and the values to update them with
         Return:
-            No return value
+            matching user or raise error
         """
-        session = self._session
-        users = session.query(User)
+        all_users = self._session.query(User)
         for k, v in kwargs.items():
             if k not in User.__dict__:
                 raise InvalidRequestError
-            for user in users:
-                if getattr(user, k) == v:
-                    return user
+            for usr in all_users:
+                if getattr(usr, k) == v:
+                    return usr
         raise NoResultFound
