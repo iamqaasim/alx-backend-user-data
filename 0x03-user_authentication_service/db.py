@@ -69,14 +69,16 @@ class DB:
             raise e
 
     def update_user(self, user_id: int, **kwargs) -> None:
-        user = self.find_user_by(id=user_id)
-        if not user:
-            raise NoResultFound("No user found with the given ID")
-
+        session = self._session
+        try:
+            user = self.find_user_by(id=user_id)
+        except NoResultFound:
+            raise ValueError()
+        
         for attr, value in kwargs.items():
             if hasattr(user, attr):
                 setattr(user, attr, value)
             else:
-                raise ValueError(f"Invalid user attribute: {attr}")
+                raise ValueError()
 
-        self._session.commit()
+        session.commit()
