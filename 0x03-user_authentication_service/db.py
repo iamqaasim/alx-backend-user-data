@@ -54,19 +54,17 @@ class DB:
         Find a user in the database based on the provided filter criteria
 
         Args:
-            **kwargs: Arbitrary keyword arguments representing filter criteria
-
-        Returns:
-            User: The first User object matching the filter criteria
+        user_id (int): user's id
+        kwargs (dict): dict of key (k), value (v) pairs representing the attributes to update and the values to update them with
+        Return:
+            No return value
         """
-        session = self._session  # Get the database session
-        try:
-            query = session.query(User).filter_by(**kwargs)  # Build the query with the provided filter criteria
-            user = query.one()  # Execute the query and retrieve the first User object
-            return user
-        except NoResultFound as e:
-            session.rollback()  # Roll back the session in case of no result found
-            raise e
-        except InvalidRequestError as e:
-            session.rollback()  # Roll back the session in case of an invalid request error
-            raise e
+        session = self._session
+        users = session.query(User)
+        for k, v in kwargs.items():
+            if k not in User.__dict__:
+                raise InvalidRequestError
+            for user in users:
+                if getattr(user, k) == v:
+                    return user
+        raise NoResultFound
