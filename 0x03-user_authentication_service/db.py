@@ -36,11 +36,9 @@ class DB:
     def add_user(self, email: str, hashed_password: str) -> User:
         """
         Add a new user to the database
-
         Args:
             email (str): User's email address
             hashed_password (str): Hashed password for the user
-
         Returns:
             User: The created User object
         """
