@@ -2,7 +2,10 @@
 """
 Flask app
 """
-from flask import Flask, jsonify
+from flask import (
+    Flask, 
+    jsonify
+)
 
 app = Flask(__name__)
 
