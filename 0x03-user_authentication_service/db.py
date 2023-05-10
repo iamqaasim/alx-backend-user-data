@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""DB module
+"""
+DB module
 """
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -31,7 +32,7 @@ class DB:
             DBSession = sessionmaker(bind=self._engine)
             self.__session = DBSession()
         return self.__session
-    
+
     def add_user(self, email: str, hashed_password: str) -> User:
         """
         Add a new user to the database
@@ -45,15 +46,17 @@ class DB:
         """
         user = User(email=email, hashed_password=hashed_password)
         session = self._session
-        session.add(user)
-        session.commit()
+        self._session.add(user)
+        self._session.commit()
         return user
 
     def find_user_by(self, **kwargs) -> User:
         """
-        Return a user who has an attribute matching the attributes passed as arguments
+        Return a user who has an attribute 
+        matching the attributes passed as arguments
         Args:
-            kwargs (dict): dict of key (k), value (v) pairs representing the attributes to update and the values to update them with
+            kwargs (dict): dict of key (k), value (v) pairs representing the attributes to update 
+            and the values to update them with
         Return:
             matching user or raise error
         """
