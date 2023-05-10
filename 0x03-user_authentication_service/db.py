@@ -61,11 +61,12 @@ class DB:
         """
         session = self._session  # Get the database session
         try:
-            user = session.query(User).filter_by(**kwargs).first()
-            if user is None:
-                raise NoResultFound("No user found based on the filter criteria")
+            query = session.query(User).filter_by(**kwargs)  # Build the query with the provided filter criteria
+            user = query.one()  # Execute the query and retrieve the first User object
             return user
-        except InvalidRequestError as e:
-            session.rollback()
+        except NoResultFound as e:
+            session.rollback()  # Roll back the session in case of no result found
             raise e
-    
+        except InvalidRequestError as e:
+            session.rollback()  # Roll back the session in case of an invalid request error
+            raise e
