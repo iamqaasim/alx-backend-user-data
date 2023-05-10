@@ -52,11 +52,11 @@ class DB:
 
     def find_user_by(self, **kwargs) -> User:
         """
-        Return a user who has an attribute 
+        Return a user who has an attribute
         matching the attributes passed as arguments
         Args:
-            kwargs (dict): dict of key (k), value (v) pairs representing the attributes to update 
-            and the values to update them with
+            kwargs (dict): dict of key (k), value (v) pairs representing the
+            attributes to update and the values to update them with
         Return:
             matching user or raise error
         """
