@@ -13,13 +13,14 @@ from user import Base, User
 
 
 class DB:
-    """DB class
+    """
+    DB class
     """
 
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=True)
+        self._engine = create_engine("sqlite:///a.db", echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -46,7 +47,7 @@ class DB:
         session = self._session
         session.add(user)
         session.commit()
-        return User
+        return user
 
     def find_user_by(self, **kwargs) -> User:
         """
