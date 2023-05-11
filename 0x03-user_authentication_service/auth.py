@@ -7,7 +7,14 @@ from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
 from uuid import uuid4
-from typing import Union
+from typing import (
+    Union,
+    TypeVar
+)
+
+from user import User
+
+U = TypeVar(User)
 
 
 def _hash_password(password: str) -> bytes:
@@ -87,3 +94,22 @@ class Auth:
         session_id = _generate_uuid()
         db.update_user(user.id, session_id=session_id)
         return session_id
+
+    def get_user_from_session_id(self, session_id: str) -> Union[None, U]:
+        """
+        Takes a session_id and returns the corresponding user
+        Args:
+            session_id (str): session id for user
+        Returns:
+            U: user that corresponds to session_id
+        """
+        db = self._db
+        if session_id is None:
+            return None
+        
+        try:
+            user = db.find_user_by(session_id=session_id)
+        except NoResultFound:
+            return None
+        
+        return user
