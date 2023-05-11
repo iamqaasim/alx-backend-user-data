@@ -29,6 +29,8 @@ def index() -> str:
 def users() -> str:
     """
     Register new users
+    Returns:
+        str: JSON string
     """
     email = request.form.get("email")
     password = request.form.get("password")
@@ -45,7 +47,7 @@ def login() -> str:
     """
     login user
     Returns:
-        str: JSON str
+        str: JSON string
     """
     email = request.form.get("email")
     password = request.form.get("password")
@@ -61,7 +63,7 @@ def login() -> str:
 @app.route("/sessions", methods=["DELETE"], strict_slashes=False)
 def logout():
     """
-    Log out a logged in user and destroy their session
+    log out a logged in user and destroy their session
     """
     session_id = request.cookies.get("session_id", None)
     user = AUTH.get_user_from_session_id(session_id)
@@ -75,9 +77,9 @@ def logout():
 @app.route("/profile", methods=["GET"], strict_slashes=False)
 def profile() -> str:
     """
-    Return a user's email based on session_id in the received cookies
+    return a user's email based on session_id in the received cookies
     Returns:
-        str: JSON str
+        str: JSON string
     """
     session_id = request.cookies.get("session_id", None)
     user = AUTH.get_user_from_session_id(session_id)
@@ -85,6 +87,21 @@ def profile() -> str:
         email = user.email
         return jsonify({"email": f"{email}"}), 200
     abort(403)
+
+@app.route("/reset_password ", methods=["POST"], strict_slashes=False)
+def get_reset_password_token() -> str:
+    """
+    Generate a token for resetting a user's password
+    Returns:
+        str: JSON string
+    """
+    email = request.form.get("email")
+    try:
+        reset_token = AUTH.get_reset_password_token(email)
+    except ValueError:
+        abort(403)
+
+    return jsonify({"email": f"{email}", "reset_token": f"{reset_token}"})
 
 
 if __name__ == "__main__":
