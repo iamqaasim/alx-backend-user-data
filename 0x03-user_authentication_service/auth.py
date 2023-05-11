@@ -7,6 +7,7 @@ from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
 from uuid import uuid4
+from typing import Union
 
 def _hash_password(password: str) -> bytes:
     """Hashes the password with bcrypt and returns the salted hash"""
@@ -53,6 +54,8 @@ class Auth:
             email (str): user's email address
             password (str): user's password
             bool: return true if validated and false if not
+        Return:
+            True if credentials are correct, else False
         """
         db = self._db
         try:
@@ -61,3 +64,23 @@ class Auth:
             return False
         input_password = password.encode("utf-8")
         return bcrypt.checkpw(input_password, user.hashed_password)
+
+    def create_session(self, email: str) -> Union[None,str]:
+        """
+        Create a session_id for an existing user and update the user's
+        session_id attribute
+        Args:
+            email (str): user's email address
+        Returns:
+            str: session_id
+            None: if user is not found
+        """
+        db = self._db
+        try:
+            user = db.find_user_by(email=email)
+        except NoResultFound:
+            return None
+        
+        session_id = _generate_uuid()
+        db.update_user(user.id, session_id=session_id)
+        return session_id
