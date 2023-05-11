@@ -9,6 +9,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from uuid import uuid4
 from typing import Union
 
+
 def _hash_password(password: str) -> bytes:
     """Hashes the password with bcrypt and returns the salted hash"""
     password = password.encode('utf-8')  # Convert password to bytes
@@ -16,11 +17,13 @@ def _hash_password(password: str) -> bytes:
     hashed = bcrypt.hashpw(password, salt)  # Hash the password with the salt
     return hashed
 
+
 def _generate_uuid() -> str:
     """
     Generate a uuid and return its string representation
     """
     return str(uuid4())
+
 
 class Auth:
     """Auth class to interact with the authentication database.
@@ -65,7 +68,7 @@ class Auth:
         input_password = password.encode("utf-8")
         return bcrypt.checkpw(input_password, user.hashed_password)
 
-    def create_session(self, email: str) -> Union[None,str]:
+    def create_session(self, email: str) -> Union[None, str]:
         """
         Create a session_id for an existing user and update the user's
         session_id attribute
@@ -80,7 +83,8 @@ class Auth:
             user = db.find_user_by(email=email)
         except NoResultFound:
             return None
-        
+
         session_id = _generate_uuid()
         db.update_user(user.id, session_id=session_id)
         return session_id
+    
